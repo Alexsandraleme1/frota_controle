@@ -1,0 +1,22 @@
+{% extends "base.html" %}{% block auth %}
+<div class="login-bg">
+  <section class="login-brand">
+    <img class="login-logo-large" src="{{ url_for('static', filename='img/secw-mark.png') }}" alt="Logo SEC.W Telecom">
+    <div class="login-wordmark">SEC’W</div><div class="login-submark">T E L E C O M</div>
+    <p>Conectando pessoas,<br><em>impulsionando negócios.</em></p>
+  </section>
+  <form class="login-card" method="post">
+    <img class="login-logo-small" src="{{ url_for('static', filename='img/secw-mark.png') }}" alt="SEC.W">
+    <div class="login-card-wordmark">SEC’W</div><div class="login-card-submark">T E L E C O M</div>
+    <div class="login-rule"></div>
+    <h2>SECW FROTA</h2><p class="login-subtitle">Acesso restrito ao sistema</p>
+    {% with messages=get_flashed_messages(with_categories=true) %}{% for c,m in messages %}<div class="alert {{c}}">{{m}}</div>{% endfor %}{% endwith %}
+    <label class="login-field"><span>♟</span><input name="username" required autofocus placeholder="Usuário" autocomplete="username"></label>
+    <label class="login-field"><span>▣</span><input id="loginPassword" type="password" name="password" required placeholder="Senha" autocomplete="current-password"><button type="button" class="password-toggle" onclick="const p=document.getElementById('loginPassword');p.type=p.type==='password'?'text':'password';this.textContent=p.type==='password'?'◉':'◎'" aria-label="Mostrar ou ocultar senha">◉</button></label>
+    <div class="login-options"><label><input type="checkbox" name="remember" value="1"> Lembrar meu acesso</label><span>SEC.W Telecom</span></div>
+    <button class="primary full login-submit">⇥ &nbsp; Entrar</button>
+    <div class="login-footer"><b>SEC’W TELECOM</b><span>Tecnologia que aproxima.</span></div>
+  </form>
+  <div class="login-bottom">♢ &nbsp; Sistema seguro &nbsp; | &nbsp; SECW Frota</div>
+</div>
+{% endblock %}

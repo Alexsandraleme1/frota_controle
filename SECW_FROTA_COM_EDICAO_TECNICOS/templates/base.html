@@ -1,0 +1,40 @@
+
+<!doctype html><html lang="pt-br"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#062b50"><link rel="manifest" href="{{ url_for('static', filename='manifest.webmanifest') }}">
+<title>{{ title if title else 'SEC.W Frota' }} | SEC.W Telecom</title><link rel="stylesheet" href="{{ url_for('static',filename='style.css') }}"></head>
+<body>{% if current_user %}<button class="mobile-menu-toggle" type="button" aria-label="Abrir menu" aria-expanded="false" id="mobileMenuToggle">☰ <span>Menu</span></button><div class="sidebar-backdrop" id="sidebarBackdrop"></div><aside class="sidebar" id="appSidebar"><div class="brand"><img class="sidebar-logo" src="{{ url_for('static', filename='img/secw-mark.png') }}" alt=""><div><b>SEC’W</b><small>TELECOM</small></div></div><div class="product">SECW FROTA</div>
+<nav>
+{% if 'dashboard' in permissions %}<a href="{{url_for('dashboard')}}">▦ <span>Painel</span></a>{% endif %}
+{% if 'notifications' in permissions or role=='employee' %}<a href="{{url_for('notifications_page')}}">♧ <span>Notificações</span></a>{% endif %}
+{% if role in ['admin','fleet'] %}<a href="{{url_for('tracking_page')}}">⌖ <span>Acompanhamento da frota</span></a>{% elif role=='employee' %}<a href="{{url_for('tracking_page')}}">⌖ <span>Minha localização</span></a>{% endif %}
+{% if 'vehicles' in permissions %}<a href="{{url_for('vehicles')}}">▣ <span>Veículos</span></a>{% endif %}
+{% if role=='employee' and active_employee_usages %}
+<a href="{{url_for('devolution')}}">↩ <span>Devolução{% if active_employee_usages|length > 1 %} ({{active_employee_usages|length}} pendentes){% endif %}</span></a>
+{% else %}
+{% if 'usage' in permissions %}<a href="{{url_for('usage')}}">⇄ <span>Retirada / Utilização</span></a>{% endif %}
+{% if 'daily_use' in permissions %}<a href="{{url_for('daily_usage')}}">▣ <span>Retirada / Resp. diária</span></a>{% endif %}
+{% endif %}
+{% if 'employees' in permissions %}<a href="{{url_for('employees')}}">♙ <span>Colaboradores</span></a>{% endif %}
+{% if 'inspections' in permissions %}<a href="{{url_for('inspections')}}">☑ <span>Vistorias</span></a>{% endif %}
+{% if 'fuel' in permissions %}<a href="{{url_for('fuel')}}">⛽ <span>Abastecimentos</span></a>{% endif %}
+{% if 'tolls' in permissions %}<a href="{{url_for('tolls')}}">🛣 <span>Pedágios</span></a>{% endif %}
+{% if 'maintenance' in permissions %}<a href="{{url_for('maintenance')}}">⚙ <span>Manutenções</span></a>{% endif %}
+{% if 'documents' in permissions %}<a href="{{url_for('documents')}}">▤ <span>Documentos</span></a>{% endif %}
+{% if 'fines' in permissions %}<a href="{{url_for('fines')}}">⚠ <span>Multas e infrações</span></a>{% endif %}
+{% if 'reports' in permissions %}<a href="{{url_for('reports')}}">▥ <span>Relatórios</span></a>{% endif %}
+{% if 'advanced_reports' in permissions %}<a href="{{url_for('advanced_reports')}}">▤ <span>Indicadores avançados</span></a>{% endif %}
+{% if role=='admin' %}<a href="{{url_for('equipment_management')}}">▣ <span>Equipamentos dos veículos</span></a><a href="{{url_for('technicians')}}">♧ <span>Cadastrar técnicos</span></a><a href="{{url_for('users')}}">⚙ <span>Gerenciar usuários</span></a><a href="{{url_for('permissions_page')}}">☷ <span>Permissões de acesso</span></a><a href="{{url_for('audit_log')}}">▤ <span>Auditoria</span></a><a href="{{url_for('download_backup')}}">↓ <span>Backup do banco</span></a>{% endif %}
+<a href="{{url_for('change_password')}}">⚿ <span>Alterar senha</span></a></nav><div class="sidebar-bottom"><small>Conectando pessoas,<br><em>impulsionando negócios.</em></small><a href="{{url_for('logout')}}">↪ Sair</a></div></aside>
+<main class="main"><header><div><span class="eyebrow">GESTÃO E CONTROLE DE VEÍCULOS</span><h1>{{ title or 'Visão geral' }}</h1></div><div style="display:flex;align-items:center;gap:10px"><div class="user-chip">{% if current_employee_photo %}<img class="avatar avatar-photo" src="{{url_for('uploaded_file',filename=current_employee_photo)}}" alt="Foto do colaborador">{% else %}<span class="avatar">{{ current_user[:1]|upper }}</span>{% endif %}<div>{{current_user}}<small>{{ {'admin':'Administrador','fleet':'Responsável pela frota','employee':'Técnico'}[role] }}</small></div></div>{% if role=='admin' %}<a class="button secondary header-logout" href="{{url_for('logout')}}">↪ Sair</a>{% endif %}</div></header>
+{% with messages=get_flashed_messages(with_categories=true) %}{% if messages %}{% for category,message in messages %}<div class="alert {{category}}">{{message}}</div>{% endfor %}{% endif %}{% endwith %}
+{% block content %}{% endblock %}<script>(function(){const btn=document.getElementById('mobileMenuToggle'),nav=document.getElementById('appSidebar'),backdrop=document.getElementById('sidebarBackdrop');function close(){nav?.classList.remove('mobile-open');backdrop?.classList.remove('visible');btn?.setAttribute('aria-expanded','false')}btn?.addEventListener('click',()=>{const open=nav.classList.toggle('mobile-open');backdrop?.classList.toggle('visible',open);btn.setAttribute('aria-expanded',String(open))});backdrop?.addEventListener('click',close);nav?.querySelectorAll('a').forEach(a=>a.addEventListener('click',close));
+/* Preenche automaticamente data e horário local nos formulários novos, sem sobrescrever edição. */
+const now=new Date(), pad=n=>String(n).padStart(2,'0');
+const localDate=now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate());
+const localDateTime=localDate+'T'+pad(now.getHours())+':'+pad(now.getMinutes());
+document.querySelectorAll('form[method="post"] input[type="date"]').forEach(el=>{if(!el.value && !el.disabled) el.value=localDate});
+document.querySelectorAll('form[method="post"] input[type="datetime-local"]').forEach(el=>{if(!el.value && !el.disabled) el.value=localDateTime});
+/* Mantém os campos da utilização após validação no servidor; arquivos precisam ser escolhidos novamente por segurança do navegador. */
+const usageForm=document.getElementById('usageForm');
+if(usageForm){const draftKey='secw_usage_draft_'+location.pathname;const success=document.querySelector('.alert.success');if(success){try{sessionStorage.removeItem(draftKey)}catch(e){}}else{try{const saved=JSON.parse(sessionStorage.getItem(draftKey)||'null');if(saved){Object.entries(saved).forEach(([name,value])=>{const fields=usageForm.querySelectorAll('[name]');fields.forEach(field=>{if(field.type==='file')return;if(field.type==='checkbox'||field.type==='radio'){field.checked=Array.isArray(value)?value.includes(field.value):!!value}else if(field.tagName==='SELECT'&&field.multiple){Array.from(field.options).forEach(o=>o.selected=Array.isArray(value)&&value.includes(o.value))}else{field.value=value}})});}}catch(e){}}
+usageForm.addEventListener('submit',()=>{try{const data={};usageForm.querySelectorAll('[name]').forEach(field=>{if(field.type==='file')return;if(field.type==='checkbox'||field.type==='radio'){if(field.checked){if(!Array.isArray(data[field.name]))data[field.name]=[];data[field.name].push(field.value)}}else if(field.tagName==='SELECT'&&field.multiple){data[field.name]=Array.from(field.selectedOptions).map(o=>o.value)}else{data[field.name]=field.value}});sessionStorage.setItem(draftKey,JSON.stringify(data))}catch(e){}});}
+})();if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('/service-worker.js').catch(()=>{}));}</script></main>{% else %}{% block auth %}{% endblock %}{% endif %}</body></html>

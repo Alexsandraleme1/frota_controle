@@ -1,0 +1,29 @@
+{% extends "base.html" %}{% set title='Minha localização' %}{% block content %}
+<section class="panel tracking-consent-panel">
+  <div class="tracking-heading"><div><span class="tracking-kicker">SECW FROTA · GPS</span><h2>Compartilhamento de localização</h2><p>Ative quando estiver utilizando um veículo da empresa. O administrador e o responsável pela frota poderão acompanhar a posição enviada pelo seu celular.</p></div><div class="tracking-icon">⌖</div></div>
+  {% if active_use %}
+    <div class="tracking-vehicle"><span>Veículo em utilização</span><strong>{{active_use.plate}} · {{active_use.model or 'Modelo não informado'}}</strong></div>
+    <div class="tracking-consent-note"><b>Privacidade e controle:</b> a localização só será enviada depois que você tocar em “Ativar localização” e conceder permissão ao navegador. Você pode interromper o compartilhamento nesta tela. O envio é encerrado automaticamente quando a utilização do veículo é finalizada.</div>
+    <div class="tracking-controls"><button class="primary" id="trackingStart" {% if tracking_enabled %}hidden{% endif %}>Ativar localização</button><button class="secondary" id="trackingStop" {% if not tracking_enabled %}hidden{% endif %}>Interromper compartilhamento</button><span id="trackingStatus" class="tracking-state">{% if tracking_enabled %}Compartilhamento ativado. Aguardando localização…{% else %}Localização desativada{% endif %}</span></div>
+    <p class="tracking-help">Mantenha esta tela aberta durante o deslocamento para enviar atualizações contínuas. Se o navegador ou o sistema suspender o aplicativo, as atualizações poderão ser interrompidas.</p>
+  {% else %}
+    <div class="empty tracking-empty">Nenhum veículo está vinculado a uma utilização ativa. Registre a retirada do veículo para habilitar o compartilhamento de localização.</div>
+  {% endif %}
+</section>
+<script>
+(()=>{
+ const start=document.getElementById('trackingStart'), stop=document.getElementById('trackingStop'), status=document.getElementById('trackingStatus');
+ if(!start||!stop||!status)return;
+ let watchId=null,lastSent=0,enabled={{ 'true' if tracking_enabled else 'false' }};
+ const say=t=>status.textContent=t;
+ async function consent(value){const r=await fetch('/api/tracking/consent',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({enabled:value})});const j=await r.json();if(!r.ok)throw new Error(j.error||'Não foi possível atualizar a localização.');return j;}
+ async function sendPosition(pos){const now=Date.now();if(now-lastSent<8000)return;lastSent=now;try{const r=await fetch('/api/tracking/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({latitude:pos.coords.latitude,longitude:pos.coords.longitude,accuracy:pos.coords.accuracy,speed:pos.coords.speed,heading:pos.coords.heading})});const j=await r.json();if(!r.ok)throw new Error(j.error||'Falha ao enviar posição.');say('Localização compartilhada · última atualização '+new Date().toLocaleTimeString('pt-BR'));}catch(e){say(e.message);}}
+ function begin(){if(!navigator.geolocation){say('Este aparelho ou navegador não oferece GPS.');return;}if(!window.isSecureContext){say('O GPS exige conexão HTTPS. Acesse pelo endereço seguro do sistema.');return;}say('Aguardando autorização e sinal do GPS…');watchId=navigator.geolocation.watchPosition(sendPosition,e=>say(e.code===1?'Permissão de localização negada. Autorize nas configurações do navegador.':'Não foi possível obter o GPS. Verifique a localização do aparelho.'),{enableHighAccuracy:true,maximumAge:5000,timeout:20000});}
+ async function stopTracking(){if(watchId!==null){navigator.geolocation.clearWatch(watchId);watchId=null;}try{await consent(false);enabled=false;start.hidden=false;stop.hidden=true;say('Compartilhamento interrompido.');}catch(e){say(e.message);}}
+ start.addEventListener('click',async()=>{start.disabled=true;try{await consent(true);enabled=true;start.hidden=true;stop.hidden=false;begin();}catch(e){say(e.message);}finally{start.disabled=false;}});
+ stop.addEventListener('click',stopTracking);
+ if(enabled){start.hidden=true;stop.hidden=false;begin();}
+ window.addEventListener('pagehide',()=>{if(watchId!==null)navigator.geolocation.clearWatch(watchId);});
+})();
+</script>
+{% endblock %}

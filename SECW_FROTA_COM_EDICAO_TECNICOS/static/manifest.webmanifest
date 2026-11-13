@@ -1,0 +1,14 @@
+{
+  "name": "SECW Frota",
+  "short_name": "SECW Frota",
+  "description": "Gestão e acompanhamento da frota SEC.W Telecom",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f3f7fa",
+  "theme_color": "#062b50",
+  "icons": [
+    {"src": "/static/img/app-icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "/static/img/app-icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"}
+  ]
+}

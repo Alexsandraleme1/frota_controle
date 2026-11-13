@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: secw-frota-gps
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    disk:
+      name: secw-frota-data
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: SECFROTA_DATA_DIR
+        value: /var/data
+      - key: SECFROTA_SECRET
+        generateValue: true
+      - key: DATABASE_URL
+        sync: false

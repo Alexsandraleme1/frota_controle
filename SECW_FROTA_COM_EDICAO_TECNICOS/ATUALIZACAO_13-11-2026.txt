@@ -1,0 +1,13 @@
+SECW GESTAO DE FROTA - ATUALIZACAO 13/11/2026
+
+Correcoes:
+1. Corrigida atualizacao de quilometragem no abastecimento para compatibilidade com PostgreSQL/Render.
+2. Campos da utilizacao ficam guardados no navegador quando ocorre erro de validacao. Fotos devem ser selecionadas novamente, por limitacao de seguranca dos navegadores.
+3. Tecnico responsavel pela responsabilidade diaria recebe notificacao quando outro tecnico utiliza o veiculo atribuido.
+4. Tecnico pode atualizar sua propria foto de perfil.
+5. Criada tela inicial exclusiva para tecnicos, com foto, dados e situacao da CNH, veiculo em uso, atalhos e notificacoes.
+
+IMPORTANTE:
+- Mantenha o Persistent Disk do Render montado em /var/data com SECFROTA_DATA_DIR=/var/data para preservar fotos e arquivos entre deploys.
+- Antes de publicar, faca backup do banco e da pasta uploads.
+- A validade da CNH deve estar cadastrada corretamente pelo administrador/responsavel da frota.

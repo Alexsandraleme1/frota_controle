@@ -1,0 +1,9 @@
+{% extends "base.html" %}{% block content %}
+<section class="panel"><div class="panel-head"><div><h3>Lista de equipamentos</h3><p>Cadastre os itens que deverão ser conferidos pelos técnicos na retirada dos veículos.</p></div></div>
+<form method="post" class="grid-form compact"><input type="hidden" name="action" value="add"><label class="span2">Nome do equipamento *<input name="name" maxlength="100" required placeholder="Ex.: Escada extensiva"></label><div class="form-actions"><button class="primary">＋ Adicionar equipamento</button></div></form>
+</section>
+<section class="panel"><div class="panel-head"><div><h3>Itens cadastrados</h3><p>Desativar um item o remove das próximas conferências, sem apagar o histórico.</p></div></div>
+<div class="table-wrap"><table><thead><tr><th>Equipamento</th><th>Situação</th><th>Ações</th></tr></thead><tbody>
+{% for item in items %}<tr><td><form method="post" class="inline equipment-rename"><input type="hidden" name="action" value="rename"><input type="hidden" name="item_id" value="{{item.id}}"><input name="name" value="{{item.name}}" maxlength="100" required class="small-input"><button class="mini">Salvar nome</button></form></td><td><span class="tag">{{'Ativo' if item.active else 'Inativo'}}</span></td><td><form method="post" class="inline"><input type="hidden" name="action" value="toggle"><input type="hidden" name="item_id" value="{{item.id}}"><button class="{{'link-danger' if item.active else 'mini'}}">{{'Desativar' if item.active else 'Reativar'}}</button></form></td></tr>
+{% else %}<tr><td colspan="3" class="empty">Nenhum equipamento cadastrado. Adicione os itens que deverão ser conferidos.</td></tr>{% endfor %}</tbody></table></div></section>
+{% endblock %}

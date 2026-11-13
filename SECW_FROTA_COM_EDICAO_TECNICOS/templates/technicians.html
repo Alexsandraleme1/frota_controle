@@ -1,0 +1,18 @@
+{% extends "base.html" %}{% block content %}
+<section class="panel"><div class="panel-head"><div><h3>Novo técnico</h3><p>Preencha uma única vez. O sistema criará o colaborador e o login já vinculado.</p></div></div>
+<form method="post" class="grid-form compact">
+<label>Nome completo *<input name="full_name" required autocomplete="name"></label>
+<label>Nome de usuário para login *<input name="username" required autocomplete="username"></label>
+<label>Senha inicial *<input name="password" type="password" minlength="8" required autocomplete="new-password"><small>Use pelo menos 8 caracteres.</small></label>
+<label>Telefone (opcional)<input name="phone" type="tel" autocomplete="tel"></label>
+<label>Número do documento<input name="document_number" autocomplete="off" placeholder="CPF ou RG"></label>
+<label>Departamento<input name="department" value="Técnico de campo"></label>
+<label>Número da CNH (opcional)<input name="license_number" autocomplete="off"></label>
+<label>Categoria da CNH<select name="license_category"><option value="">Selecione</option><option>A</option><option>B</option><option>AB</option><option>C</option><option>D</option><option>E</option><option>AC</option><option>AD</option><option>AE</option></select></label>
+<label>Validade da CNH<input name="license_due" type="date"></label>
+<div class="span2"><p><b>Permissões deste perfil:</b> somente <b>Utilização</b> (solicitar/registrar saída e devolução) e <b>Abastecimentos</b>. Não acessa painel, veículos, colaboradores, manutenção, multas, documentos, relatórios ou administração de usuários.</p></div>
+<div class="form-actions"><button class="primary" type="submit">＋ Cadastrar técnico e criar login</button></div></form></section>
+<section class="panel"><div class="panel-head"><div><h3>Técnicos cadastrados</h3><p>Confira os acessos ativos e desative ou reative quando necessário.</p></div></div><label class="table-search">Pesquisar <input type="search" id="techSearch" placeholder="Nome ou usuário"></label><div class="table-wrap"><table id="techTable"><thead><tr><th>Nome</th><th>Usuário</th><th>Colaborador vinculado</th><th>Permissões</th><th>Status</th><th>Ações</th></tr></thead><tbody>
+{% for r in rows %}<tr><td><b>{{r.full_name}}</b></td><td>{{r.username}}</td><td>{{r.employee_name or 'Sem vínculo'}}</td><td>Utilização e Abastecimentos</td><td>{{'Ativo' if r.active else 'Inativo'}}</td><td><div class="table-actions"><a class="button secondary small" href="{{url_for('technician_edit',item_id=r.id)}}">✎ Editar cadastro</a><form method="post" action="{{url_for('user_toggle',item_id=r.id)}}"><button class="link-danger">{{'Desativar acesso' if r.active else 'Reativar acesso'}}</button></form></div></td></tr>{% else %}<tr><td colspan="6" class="empty">Nenhum técnico cadastrado.</td></tr>{% endfor %}</tbody></table></div></section>
+<script>document.addEventListener('DOMContentLoaded',function(){const i=document.getElementById('techSearch');const rs=document.querySelectorAll('#techTable tbody tr');i?.addEventListener('input',function(){const q=i.value.toLocaleLowerCase('pt-BR');rs.forEach(r=>r.hidden=!r.innerText.toLocaleLowerCase('pt-BR').includes(q));});});</script>
+{% endblock %}

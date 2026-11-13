@@ -1,0 +1,15 @@
+{% extends "base.html" %}{% block content %}
+<section class="panel form-panel">
+  <div class="panel-head"><div><h3>Editar cadastro do técnico</h3><p>Atualize os dados pessoais e documentos. O nome também será atualizado no acesso do técnico.</p></div></div>
+  <form method="post" class="grid-form">
+    <label>Nome completo *<input name="full_name" value="{{item.full_name or item.name or ''}}" required></label>
+    <label>Usuário de login <input value="{{item.username}}" disabled><small>O nome de usuário não é alterado nesta tela.</small></label>
+    <label>Telefone<input name="phone" type="tel" value="{{item.phone or ''}}" autocomplete="tel"></label>
+    <label>Número do documento (CPF/RG)<input name="document_number" value="{{item.document_number or ''}}" autocomplete="off"></label>
+    <label>Departamento<input name="department" value="{{item.department or 'Técnico de campo'}}"></label>
+    <label>Número da CNH<input name="license_number" value="{{item.license_number or ''}}"></label>
+    <label>Categoria da CNH<select name="license_category"><option value="">Selecione</option>{% for c in ['A','B','AB','C','D','E','AC','AD','AE'] %}<option value="{{c}}" {% if item.license_category==c %}selected{% endif %}>{{c}}</option>{% endfor %}</select></label>
+    <label>Validade da CNH<input name="license_due" type="date" value="{{item.license_due or ''}}"></label>
+    <div class="form-actions"><a class="button secondary" href="{{url_for('technicians')}}">Cancelar</a><button class="primary" type="submit">Salvar alterações</button></div>
+  </form>
+</section>{% endblock %}

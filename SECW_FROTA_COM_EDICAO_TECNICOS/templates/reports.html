@@ -1,0 +1,16 @@
+{% extends "base.html" %}{% set title='Relatórios gerenciais' %}{% block content %}
+<section class="panel">
+<form method="get" class="grid-form compact report-filter">
+<label>Relatório por veículo<select name="vehicle_id"><option value="">Relatório geral — todos os carros</option>{% for v in vehicles %}<option value="{{v.id}}" {% if vehicle_id|string==v.id|string %}selected{% endif %}>{{v.plate}} — {{v.brand or ''}} {{v.model or ''}}</option>{% endfor %}</select></label>
+<label>Data inicial<input type="date" name="start" value="{{start or ''}}"></label><label>Data final<input type="date" name="end" value="{{end or ''}}"></label>
+<div class="form-actions"><button class="primary">Filtrar período</button><a class="button secondary" href="{{url_for('reports',period='week')}}">Esta semana</a><a class="button secondary" href="{{url_for('reports',period='month')}}">Este mês</a><a class="button secondary" href="{{url_for('reports')}}">Limpar</a></div>
+</form>
+<div class="panel-head"><div><h3>{% if vehicle_id %}Relatório por veículo{% else %}Relatório geral da frota{% endif %}</h3><p>Período: {{start or 'início do histórico'}} até {{end or 'hoje/fim do histórico'}}. Os valores consideram os lançamentos registrados.</p></div><div><a class="button secondary" href="{{url_for('reports_pdf',start=start,end=end)}}">↓ PDF</a> <a class="button primary" href="{{url_for('reports_csv',start=start,end=end)}}">↓ CSV</a></div></div>
+<div class="stats-grid">
+<div class="stat-card"><span>Combustível</span><strong>R$ {{'%.2f'|format(totals.fuel_total)}}</strong></div>
+<div class="stat-card"><span>Manutenção</span><strong>R$ {{'%.2f'|format(totals.maintenance_total)}}</strong></div>
+<div class="stat-card"><span>Multas</span><strong>R$ {{'%.2f'|format(totals.fines_total)}}</strong></div>
+<div class="stat-card"><span>Pedágios</span><strong>R$ {{'%.2f'|format(totals.toll_total)}}</strong></div>
+<div class="stat-card"><span>Total geral</span><strong>R$ {{'%.2f'|format(totals.grand_total)}}</strong></div>
+</div>
+<div class="table-wrap"><table><thead><tr><th>Placa</th><th>Veículo</th><th>KM atual</th><th>Situação</th><th>Combustível</th><th>Manutenção</th><th>Multas</th><th>Pedágios</th><th>Total geral</th></tr></thead><tbody>{% for r in rows %}<tr><td><b>{{r.plate}}</b></td><td>{{r.brand or ''}} {{r.model or ''}}</td><td>{{r.current_km}}</td><td>{{r.status}}</td><td>R$ {{'%.2f'|format(r.fuel_total)}}</td><td>R$ {{'%.2f'|format(r.maintenance_total)}}</td><td>R$ {{'%.2f'|format(r.fines_total)}}</td><td>R$ {{'%.2f'|format(r.toll_total)}}</td><td><b>R$ {{'%.2f'|format(r.fuel_total+r.maintenance_total+r.fines_total+r.toll_total)}}</b></td></tr>{% else %}<tr><td colspan="9" class="empty">Nenhum veículo encontrado para este filtro.</td></tr>{% endfor %}</tbody></table></div></section>{% endblock %}

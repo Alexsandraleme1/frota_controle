@@ -1,0 +1,21 @@
+{% extends "base.html" %}{% block content %}
+<style>
+.tech-welcome{display:grid;grid-template-columns:150px 1fr;gap:24px;align-items:center;background:linear-gradient(120deg,#082f55,#145b88);color:#fff;border-radius:18px;padding:26px;margin-bottom:20px}.tech-profile-photo{width:132px;height:132px;border-radius:50%;object-fit:cover;border:4px solid rgba(255,255,255,.8);background:#e8eef4}.tech-profile-placeholder{display:grid;place-items:center;font-size:52px;font-weight:700;color:#16466d}.tech-welcome h2{margin:0 0 7px;font-size:25px}.tech-welcome p{margin:0;color:#e1edf7}.tech-license{border-left:5px solid #17824c}.tech-license.warning{border-color:#d58a16}.tech-license.danger{border-color:#c43d3d}.tech-status{font-weight:800;font-size:20px;margin:6px 0}.tech-active{display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap}.tech-actions{display:flex;gap:12px;flex-wrap:wrap;margin:18px 0}.tech-actions a{flex:1;min-width:180px;text-align:center;padding:18px;border-radius:12px;background:#edf4fa;color:#103b60;text-decoration:none;font-weight:700}.tech-actions a:hover{background:#dcebf7}@media(max-width:600px){.tech-welcome{grid-template-columns:1fr;text-align:center;justify-items:center;padding:22px}.tech-profile-photo{width:112px;height:112px}}
+</style>
+{% if employee %}
+<section class="tech-welcome">
+  {% if employee.photo %}<img class="tech-profile-photo" src="{{url_for('uploaded_file',filename=employee.photo)}}" alt="Foto de {{employee.name}}">{% else %}<div class="tech-profile-photo tech-profile-placeholder">{{employee.name[:1]|upper}}</div>{% endif %}
+  <div><h2>Olá, {{employee.name}}!</h2><p>Bem-vindo(a) ao seu espaço no SECW Gestão de Frota.</p>
+  </div>
+</section>
+<section class="panel tech-license {% if license_status=='Vencida' %}danger{% elif license_status!='Em dia' %}warning{% endif %}">
+  <div class="panel-head"><div><h3>Situação da sua CNH</h3><p>Confira seus dados de habilitação.</p></div><span class="tag {% if license_status=='Em dia' %}green{% elif license_status=='Vencida' %}orange{% endif %}">{{license_status}}</span></div>
+  <div class="tech-status">{% if license_status=='Em dia' %}✓ Tudo certo com sua documentação{% elif license_status=='Vencida' %}⚠ CNH vencida{% else %}Atenção à documentação{% endif %}</div>
+  <p>{{license_message}}</p>
+  <div class="stats"><div class="stat"><span>Número da CNH</span><strong style="font-size:18px">{{employee.license_number or 'Não informado'}}</strong></div><div class="stat"><span>Categoria</span><strong>{{employee.license_category or '—'}}</strong></div><div class="stat"><span>Validade</span><strong style="font-size:18px">{{employee.license_due or 'Não cadastrada'}}</strong></div></div>
+</section>
+{% if active_usage %}<section class="panel"><div class="tech-active"><div><h3>Veículo sob sua responsabilidade</h3><p><b>{{active_usage.plate}}</b> · {{active_usage.model or ''}}</p><small>Saída: {{active_usage.departure}} · KM inicial: {{active_usage.km_out}}</small></div><span class="tag">Em utilização</span></div></section>{% else %}<section class="panel"><h3>Nenhum veículo em utilização</h3><p>Quando registrar uma retirada, as informações do veículo aparecerão aqui.</p></section>{% endif %}
+<div class="tech-actions">{% if active_usage %}<a href="{{url_for('devolution')}}">↩ Registrar devolução do veículo</a>{% else %}<a href="{{url_for('usage')}}">⇄ Registrar retirada / utilização</a><a href="{{url_for('daily_usage')}}">▣ Registrar retirada / responsabilidade diária</a>{% endif %}<a href="{{url_for('fuel')}}">⛽ Registrar abastecimento</a></div>
+{% else %}<section class="panel"><h3>Cadastro do técnico não vinculado</h3><p>{{license_message}}</p></section>{% endif %}
+
+{% endblock %}

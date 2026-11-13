@@ -1,0 +1,28 @@
+SECW FROTA — VERSÃO EVOLUTIVA 06/11/2026
+
+INCLUÍDO:
+- Visual renovado e responsivo; login centralizado.
+- Foto de colaborador no cadastro e atualização de foto dos colaboradores existentes.
+- Foto ao lado do nome na lista de colaboradores e histórico de utilização.
+- Compartilhamento de veículo com responsabilidade diária ativa.
+- Notificações internas ao responsável diário e aos administradores/responsáveis da frota na retirada e devolução compartilhadas.
+- Bloqueio de utilização avulsa simultânea.
+- Preservação da responsabilidade diária após a devolução da utilização avulsa.
+- Migração automática e compatível do banco para o campo de foto.
+
+ATENÇÃO — LIMITAÇÕES IMPORTANTES:
+- Push Android com app fechado ainda depende de configurar Web Push/VAPID e testar os dispositivos. As notificações internas já existentes continuam funcionando.
+- Localização em segundo plano com o app fechado não é garantida pelo navegador/PWA. Para isso é necessário serviço Android nativo em primeiro plano e permissões adequadas.
+- A sintaxe Python foi verificada, mas o teste Flask não pôde ser executado neste ambiente por falta da dependência Flask.
+
+CORREÇÃO DE FOTOS — 06/11/2026:
+- Compressão automática das seis fotos de saída no próprio navegador, assim que cada imagem é selecionada.
+- Redimensionamento e conversão para JPEG otimizado no servidor (máximo 1600 px, qualidade 75).
+- Limpeza dos arquivos já processados se alguma foto da vistoria falhar.
+- Adicionada dependência Pillow para processamento das imagens.
+
+ATUALIZAÇÃO:
+1. Faça backup do banco e dos uploads.
+2. Preserve o disco persistente e o arquivo secw_frota.db no Render.
+3. Instale requirements.txt e publique os arquivos desta versão.
+4. Teste com usuários de teste antes do uso operacional.

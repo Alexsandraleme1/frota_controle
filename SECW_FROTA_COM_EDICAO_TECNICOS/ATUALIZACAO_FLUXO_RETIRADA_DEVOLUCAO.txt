@@ -1,0 +1,12 @@
+SECW GESTÃO DE FROTA — AJUSTE DO FLUXO
+
+1. Para usuários do perfil Técnico, enquanto houver uma ou mais retiradas ativas (Responsabilidade diária ou Utilização), o menu esconde as duas opções de retirada e mostra apenas Devolução.
+2. A tela Devolução reúne todas as utilizações ativas do técnico, tanto diárias quanto avulsas, com o formulário de devolução de cada veículo.
+3. Após concluir todas as devoluções ativas, o menu volta a exibir as opções de retirada.
+4. Os painéis de notificações recentes foram removidos do Painel principal e da página inicial do Técnico. As notificações continuam disponíveis no item Notificações do menu.
+5. Dados, registros, fotos e banco de dados não são apagados por estas alterações.
+
+Publicação:
+- Faça backup do banco e da pasta uploads antes de atualizar.
+- Substitua os arquivos da aplicação pelo conteúdo deste ZIP sem apagar o banco persistente nem a pasta uploads.
+- Faça deploy e teste com um usuário Técnico: retirada avulsa, devolução; retirada diária, devolução; notificações.
